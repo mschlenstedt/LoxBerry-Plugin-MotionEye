@@ -1,0 +1,41 @@
+<center>
+<p>
+<table border=1>
+<tr><td>
+	<table border=0 cellpadding=10 cellspacing=10>
+	<tr>
+	<td colspan=5 align=center>
+	<b><TMPL_VAR SETTINGS.LABEL_SERVER></b>
+	</td>
+	</tr>
+	<tr>
+	<td>
+		<a id="button" data-icon="check" data-role="button" data-inline="true" data-mini="false" href="./index.cgi?do=start"><TMPL_VAR SETTINGS.LABEL_START></a>
+	</td>
+	<td>
+		<a id="button" data-icon="delete" data-role="button" data-inline="true" data-mini="false" href="./index.cgi?do=stop"><TMPL_VAR SETTINGS.LABEL_STOP></a>
+	</td>
+	<td>
+		<a id="button" data-icon="refresh" data-role="button" data-inline="true" data-mini="false" href="./index.cgi?do=restart"><TMPL_VAR SETTINGS.LABEL_RESTART></a>
+	</td>
+	<td>
+		<a id="button" data-icon="delete" data-role="button" data-inline="true" data-mini="false" href="./index.cgi?do=enable"><TMPL_VAR SETTINGS.LABEL_ENABLE></a>
+	</td>
+	<td>
+		<a id="button" data-icon="delete" data-role="button" data-inline="true" data-mini="false" href="./index.cgi?do=disable"><TMPL_VAR SETTINGS.LABEL_DISABLE></a>
+	</td>
+	</tr>
+	<tr>
+	<td colspan=5 align=center>
+		<font face="courier"><TMPL_VAR SETTINGS.LABEL_BOOTSTATE>&nbsp;<b><TMPL_VAR BOOTSTATE></b>&nbsp;&nbsp;<TMPL_VAR SETTINGS.LABEL_STATE>&nbsp;<b><TMPL_VAR STATE></b></font>
+	</td>
+	</tr>
+	</table>
+</td></td>
+</table>
+</p>
+<br>
+<p>
+<TMPL_VAR SETTINGS.HINT_NOSETTINGS>
+</p>
+</center>
