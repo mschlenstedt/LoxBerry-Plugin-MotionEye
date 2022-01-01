@@ -45,9 +45,20 @@ PLOG=$LBPLOG/$PDIR # Note! This is stored on a Ramdisk now!
 PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
+
+echo "<INFO> Installing setuptools via pip..."
+yes | pip2 install -U pip setuptools
+
+INSTALLED_ST=$(pip2 list --format=columns | grep "setuptools" | grep -v grep | wc -l)
+if [ ${INSTALLED_ST} -ne "0" ]; then
+	echo "<OK> Setuptools installed successfully."
+else
+	echo "<FAIL> Setuptools could not be installed."
+	exit 2;
+fi 
  
 echo "<INFO> Installing motioneye via pip..."
-yes | pip2 install -U pip motioneye
+yes | pip2 install motioneye
 
 INSTALLED_ME=$(pip2 list --format=columns | grep "motioneye" | grep -v grep | wc -l)
 if [ ${INSTALLED_ME} -ne "0" ]; then
