@@ -28,4 +28,9 @@ systemctl stop motioneye
 echo "<INFO> Disabling motioneye service."
 systemctl disable motioneye
 
+echo "<INFO> Removing MotionEye Config Folder."
+if [ -L /etc/motioneye ]; then
+  rm /etc/motioneye
+fi
+
 exit 0
