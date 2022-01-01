@@ -1,0 +1,10 @@
+[Unit]
+Description=motionEye Server
+
+[Service]
+ExecStart=/usr/local/bin/meyectl startserver -c /etc/motioneye/motioneye.conf
+User=loxberry
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

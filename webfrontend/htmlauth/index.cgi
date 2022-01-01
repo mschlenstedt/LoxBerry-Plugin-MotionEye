@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-# Copyright 2018 Michael Schlenstedt, michael@loxberry.de
+# Copyright 2019 Michael Schlenstedt, michael@loxberry.de
+#                Christian Fenzl, christian@loxberry.de
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,106 +20,77 @@
 # Modules
 ##########################################################################
 
-use LoxBerry::System;
-use LoxBerry::Web;
+# use Config::Simple '-strict';
+# use CGI::Carp qw(fatalsToBrowser);
 use CGI;
-#use Config::Simple;
+use LoxBerry::System;
+#use LoxBerry::Web;
+#use LoxBerry::JSON; # Available with LoxBerry 2.0
+#require "$lbpbindir/libs/LoxBerry/JSON.pm";
+#use LoxBerry::Log;
+#use Time::HiRes qw ( sleep );
 use warnings;
 use strict;
+#use Data::Dumper;
 
 ##########################################################################
 # Variables
 ##########################################################################
 
-##########################################################################
-# Read Settings
-##########################################################################
+# Read Form
+my $cgi = CGI->new;
+my $q = $cgi->Vars;
 
-# Version of this script
-my $version = "0.0.2";
+my $version = LoxBerry::System::pluginversion();
 
-#$cfg = new Config::Simple("$lbhomedir/config/system/general.cfg");
+# Language Phrases
+my %L;
 
-##########################################################################
-# Main program
-##########################################################################
+require LoxBerry::Web;
 
-# Get CGI
-our $cgi = CGI->new;
+# Template
+my $templatefile = "$lbptemplatedir/settings.html";
+my $template = LoxBerry::System::read_file($templatefile);
 
-my $maintemplate = HTML::Template->new(
-                filename => "$lbptemplatedir/settings.html",
-                global_vars => 1,
-                loop_context_vars => 1,
-                die_on_bad_params=> 0,
-                #associate => $cfg,
-                debug => 1,
-                );
+# Add JS Scripts to template
+$templatefile = "$lbptemplatedir/javascript.html";
+$template .= LoxBerry::System::read_file($templatefile);
 
-my %L = LoxBerry::System::readlanguage($maintemplate, "language.ini");
+my $templateout = HTML::Template->new_scalar_ref(
+	\$template,
+	global_vars => 1,
+	loop_context_vars => 1,
+	die_on_bad_params => 0,
+);
 
-# Actions to perform
-my $do;
-if ( $cgi->param('do') ) { 
-	$do = $cgi->param('do'); 
-	if ( $do eq "start") {
-		system ("sudo $lbpbindir/lms_wrapper.sh start > /dev/null 2>&1");
-	}
-	if ( $do eq "stop") {
-		system ("sudo $lbpbindir/lms_wrapper.sh stop > /dev/null 2>&1");
-	}
-	if ( $do eq "restart") {
-		system ("sudo $lbpbindir/lms_wrapper.sh restart > /dev/null 2>&1");
-	}
-	if ( $do eq "enable") {
-		system ("sudo $lbpbindir/lms_wrapper.sh enable > /dev/null 2>&1");
-	}
-	if ( $do eq "disable") {
-		system ("sudo $lbpbindir/lms_wrapper.sh disable > /dev/null 2>&1");
-	}
-}
-
-# Check current state
-my $state;
-qx ( systemctl is-active logitechmediaserver );
-if ($? eq 0) {
-	my $pid = qx ( pgrep -o -f '/usr/sbin/squeezeboxserver ' );
-	chomp $pid;
-	$state = "Active. PID is: $pid";
-} else {
-	$state = "Not active";
-}
-$maintemplate->param( STATE => $state);
-
-# Check boot state
-my $bootstate;
-qx ( systemctl is-enabled logitechmediaserver );
-if ($? eq 0) {
-	$bootstate = "Enabled";
-} else {
-	$bootstate = "Disabled";
-}
-$maintemplate->param( BOOTSTATE => $bootstate);
+# Language File
+%L = LoxBerry::System::readlanguage($templateout, "language.ini");
 
 # Navbar
-our $host = "$ENV{HTTP_HOST}";
-# cat motioneye.conf | grep -e "^port.*" | cut -d " " -f2
-our $port = qx ( cat /var/lib/squeezeboxserver/prefs/server.prefs | grep -e '^httpport' | awk -F ': ' '{ print \$2 }' | sed s/\\'//g);
+my $host = "$ENV{HTTP_HOST}";
+my $port = qx ( cat $lbpconfigdir/motioneye.conf | grep -e "^port.*" | cut -d " " -f2 );
 chomp $port;
 
 our %navbar;
-$navbar{1}{Name} = "$L{'SETTINGS.LABEL_LMS'}";
+$navbar{1}{Name} = "$L{'COMMON.LABEL_ME_WEBUI'}";
 $navbar{1}{URL} = "http://$host:$port";
 $navbar{1}{target} = '_blank';
 
-$navbar{2}{Name} = "$L{'SETTINGS.LABEL_LMS_SETTINGS'}";
-$navbar{2}{URL} = "http://$host:$port/settings/index.html";
+$navbar{2}{Name} = "$L{'COMMON.LABEL_MULTIVIEW'}";
+$navbar{2}{URL} = "/plugins/$lbpplugindir/index.cgi";
 $navbar{2}{target} = '_blank';
 
-# Print Template
-LoxBerry::Web::lbheader("LMS for LoxBerry", "http://www.loxwiki.eu:80");
-print $maintemplate->output;
-LoxBerry::Web::lbfooter();
+$navbar{3}{Name} = "$L{'COMMON.LABEL_LOGFILES'}";
+$navbar{3}{URL} = "/admin/system/tools/logfile.cgi?logfile=plugins/$lbpplugindir/motion.log&header=html&format=template";
+$navbar{3}{target} = '_blank';
 
+# Template Vars
+$templateout->param("MEWEBUILINK", "http://$host:$port");
+
+# Print out Template
+LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://www.loxwiki.eu/x/3gmcAw", "");
+print $templateout->output();
+LoxBerry::Web::lbfooter();
+	
 exit;
 

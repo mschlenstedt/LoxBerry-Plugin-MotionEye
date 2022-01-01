@@ -1,0 +1,11 @@
+ffmpeg
+libmariadb3
+libpq5
+libmicrohttpd12
+python-pip
+python-dev
+libssl-dev
+libcurl4-openssl-dev
+libjpeg-dev
+libz-dev
+python-pil
