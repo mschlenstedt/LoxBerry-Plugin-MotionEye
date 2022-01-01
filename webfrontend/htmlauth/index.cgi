@@ -88,7 +88,7 @@ $navbar{3}{target} = '_blank';
 $templateout->param("MEWEBUILINK", "http://$host:$port");
 
 # Print out Template
-LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://www.loxwiki.eu/x/3gmcAw", "");
+LoxBerry::Web::lbheader($L{'COMMON.LABEL_PLUGINTITLE'} . " V$version", "https://loxwiki.atlassian.net/wiki/x/dIDmYQ", "");
 print $templateout->output();
 LoxBerry::Web::lbfooter();
 	
