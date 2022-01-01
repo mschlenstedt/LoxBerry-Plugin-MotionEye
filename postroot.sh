@@ -72,7 +72,7 @@ echo "<INFO> Creating /etc/motioneye..."
 ln -s $PCONFIG /etc/motioneye
 
 echo "<INFO> Installing MotionEye Servicefile..."
-cp $PTEMPDIR/templates/motioneye.systemd-unit-local /etc/systemd/system/motioneye.service
+cp $PTEMPL/motioneye.systemd-unit-local /etc/systemd/system/motioneye.service
 systemctl daemon-reload
 systemctl enable motioneye
 systemctl start motioneye
