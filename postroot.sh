@@ -71,6 +71,9 @@ fi
 echo "<INFO> Creating /etc/motioneye..."
 ln -s $PCONFIG /etc/motioneye
 
+echo "<INFO> Adding user loxberry to video group..."
+usermod -a -G video loxberry
+
 echo "<INFO> Installing MotionEye Servicefile..."
 cp $PTEMPL/motioneye.systemd-unit-local /etc/systemd/system/motioneye.service
 systemctl daemon-reload
