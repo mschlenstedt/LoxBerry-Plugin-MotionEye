@@ -67,7 +67,7 @@ my $templateout = HTML::Template->new_scalar_ref(
 %L = LoxBerry::System::readlanguage($templateout, "language.ini");
 
 # Navbar
-my $host = "$ENV{HTTP_HOST}";
+my $host = "$ENV{SERVER_NAME}";
 my $port = qx ( cat $lbpconfigdir/motioneye.conf | grep -e "^port.*" | cut -d " " -f2 );
 chomp $port;
 
