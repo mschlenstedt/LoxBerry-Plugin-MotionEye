@@ -46,10 +46,15 @@ PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
-echo "<INFO> Installing setuptools via pip..."
-yes | pip2 install -U pip setuptools
+echo "<INFO> Install newest pip2 version..."
+curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output /tmp/get-pip.py
+python2 /tmp/get-pip.py
+rm /tmp/get-pip.py
 
-INSTALLED_ST=$(pip2 list --format=columns | grep "setuptools" | grep -v grep | wc -l)
+echo "<INFO> Installing setuptools via pip..."
+yes | python2 -m pip setuptools
+
+INSTALLED_ST=$(python2 -m pip list --format=columns | grep "setuptools" | grep -v grep | wc -l)
 if [ ${INSTALLED_ST} -ne "0" ]; then
 	echo "<OK> Setuptools installed successfully."
 else
@@ -58,9 +63,9 @@ else
 fi 
  
 echo "<INFO> Installing motioneye via pip..."
-yes | pip2 install motioneye
+yes | python2 -m pip install motioneye
 
-INSTALLED_ME=$(pip2 list --format=columns | grep "motioneye" | grep -v grep | wc -l)
+INSTALLED_ME=$(python2 -m pip list --format=columns | grep "motioneye" | grep -v grep | wc -l)
 if [ ${INSTALLED_ME} -ne "0" ]; then
 	echo "<OK> MotionEye installed successfully."
 else
