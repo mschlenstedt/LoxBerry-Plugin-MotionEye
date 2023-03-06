@@ -83,10 +83,13 @@ echo "<INFO> Installing MotionEye Servicefile..."
 cp $PTEMPL/motioneye.systemd-unit-local /etc/systemd/system/motioneye.service
 # If Shebang is still /usr/bin/python, change it to /usr/bin/python2
 sed -i 's/^#!\(.*\)python$/#!\1python2/' /usr/local/bin/meyectl
-
 systemctl daemon-reload
 systemctl enable motioneye
 systemctl start motioneye
+
+# Motion is handled by MotionEye - so disable it here
+systemctl stop motion
+systemctl disable motion
 
 # Exit with Status 0
 exit 0
