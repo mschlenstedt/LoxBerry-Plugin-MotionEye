@@ -49,18 +49,24 @@ foreach my $file (@files) {
 		my $content = LoxBerry::System::read_file("$lbpconfigdir/$file");
 		if ($content) {
 			my @lines = split("\n", $content);
+			my %stream;
 			foreach my $line (@lines) {
-				my %stream;
-				if ( $line =~ /^stream_port (\d+)$/ ) { # Full (RTSP) Cams
-					$stream{"No"} = "$cam";
+				$stream{"No"} = "$cam";
+				if ( $line =~ /^stream_port (\d+)$/ ) { # Network cam
 					$stream{"Url"} = "http://$host:$1";
-					push (@streams, \%stream);
 				} 
-				elsif ( $line =~ /^# \@url (.*)$/ ) { # MJPEG Cams
-					$stream{"No"} = "$cam";
+				elsif ( $line =~ /^# \@url (.*)$/ ) { # MJPEG only Cams
 					$stream{"Url"} = "$1";
-					push (@streams, \%stream);
-			       }
+				}
+				elsif ( $line =~ /^# \@url (.*)$/ ) { # MJPEG only Cams
+					$stream{"Url"} = "$1";
+				}
+				elsif ( $line =~ /^stream_localhost off$/ ) { # Enabled streaming
+					$stream{"Enabled"} = 1;
+				}
+			}
+			if ( $stream{"Url"} && $stream{"Enabled"} ) {
+				push (@streams, \%stream);
 			}
 		}
 	}
