@@ -8,3 +8,6 @@ libssl-dev
 libcurl4-openssl-dev
 libjpeg-dev
 zlib1g-dev
+curl
+file
+s-nail
