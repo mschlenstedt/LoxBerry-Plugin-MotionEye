@@ -49,8 +49,70 @@ if (!$query{"cam"}) {
 	print "Missing options. Please read docuةentation at https://wiki.loxberry.de/plugins/motioneye_plugin/start\n";
 	exit 1;
 }
-$query{"cam"} = "0" if !$query{"cam"};
 
-print "Executing command: curl \"http://localhost:7999/$query{'cam'}/config/set?emulate_motion=$query{'motion'}\n\n";
-system ("curl \"http://localhost:7999/$query{'cam'}/config/set?emulate_motion=$query{'motion'}\"");
+my $configfile = "$lbpconfigdir" . "/camera-" . $query{'cam'} . ".conf";
+if (!-e $configfile) {
+	print "Config file for Camera ID $query{'cam'} does not exist.";
+	exit 1;
+}
+
+# Set Motion status
+if ($query{"motion"} ne "") {
+
+	$query{"motion"} = "0" if !$query{"motion"};
+
+	print "Executing command: curl \"http://localhost:7999/$query{'cam'}/config/set?emulate_motion=$query{'motion'}\n\n";
+	system ("curl \"http://localhost:7999/$query{'cam'}/config/set?emulate_motion=$query{'motion'}\"");
+	print "\n\n";
+
+}
+
+if ($query{"mail"} eq "1") {
+
+	if (!$query{"to"}) {
+		print "Missing options. Please read docuةentation at https://wiki.loxberry.de/plugins/motioneye_plugin/start\n";
+		exit 1;
+	}
+
+	my @recipients = split(',', $query{"to"});
+	my $recipients;
+	for (@recipients){
+		$recipients = $recipients . " $_";
+	}
+
+	my $targetdir = qx (cat $configfile | grep target_dir | cut -d' ' -f2);
+	chomp $targetdir;
+
+	if (!-d $targetdir) {
+		print "Target dir for Camera ID $query{'cam'} does not exist.";
+		exit 1;
+	}
+
+	print "Executing command: curl \"http://localhost:7999/$query{'cam'}/action/snapshot\n\n";
+	system ("curl \"http://localhost:7999/$query{'cam'}/action/snapshot\"");
+	print "\n\n";
+
+	if (!-e "$targetdir/lastsnap.jpg") {
+		print "Last Snapshot in $targetdir does not exist.";
+		exit;
+	}
+
+	if ($query{"resize"}) {
+		print "Executing command: convert -resize $query{'resize'} $targetdir/lastsnap.jpg /tmp/lastsnap_$query{'cam'}.jpg\n\n";
+		system ("convert -resize $query{'resize'} $targetdir/lastsnap.jpg /tmp/lastsnap_$query{'cam'}.jpg");
+		print "\n\n";
+	} else {
+		system ("cp $targetdir/lastsnap.jpg /tmp/lastsnap_$query{'cam'}.jpg");
+	}
+
+	$query{"text"} = "This is Motioneye. Please find attached the last Snapshot of Camera ID " . $query{'cam'} if !$query{"text"};
+	$query{"subject"} = "Snapshot from MotionEye from Camera ID " . $query{'cam'} if !$query{"subject"};
+
+	print "Executing command: printf \"$query{'text'}\" | s-nail -a \"/tmp/lastsnap_$query{'cam'}.jpg\" -s \"$query{'subject'}\" $recipients\n\n";
+	system ("printf \"$query{'text'}\" | s-nail -a \"/tmp/lastsnap_$query{'cam'}.jpg\" -s \"$query{'subject'}\" $recipients");
+	print "\n\n";
+	unlink ("$targetdir/lastsnap.jpg");
+
+}
+
 exit;
