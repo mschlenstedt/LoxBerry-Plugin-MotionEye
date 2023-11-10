@@ -11,3 +11,4 @@ zlib1g-dev
 curl
 file
 s-nail
+libimage-magick-perl
