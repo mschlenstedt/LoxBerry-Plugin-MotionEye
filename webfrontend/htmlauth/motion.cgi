@@ -19,19 +19,14 @@
 # Modules
 ##########################################################################
 
-# use Config::Simple '-strict';
-# use CGI::Carp qw(fatalsToBrowser);
 use CGI;
 use LoxBerry::System;
-#use LoxBerry::Web;
-#use LoxBerry::JSON; # Available with LoxBerry 2.0
-#require "$lbpbindir/libs/LoxBerry/JSON.pm";
-#use LoxBerry::Log;
-#use Time::HiRes qw ( sleep );
+use Image::Magick;
+use Time::HiRes qw( sleep );
 use warnings;
 use strict;
 #use Data::Dumper;
-use Image::Magick;
+# use CGI::Carp qw(fatalsToBrowser);
 
 # We do not want to use CGI Module here (takes to long to load...)
 my %query;
@@ -95,10 +90,23 @@ if ($query{"mail"} eq "1") {
 		exit 1;
 	}
 
+
 	print "Executing command: curl \"http://localhost:7999/$query{'cam'}/action/snapshot\n\n";
 	system ("curl \"http://localhost:7999/$query{'cam'}/action/snapshot\"");
 	print "\n\n";
-	sleep 0.5;
+
+	# Wait for a fresh snapshot - but a maximum of 2 seconds
+	for (my $i = 0; $i < 20; $i++) {
+		my $now = time();
+		my $mtime = (stat("$targetdir/lastsnap.jpg"))[9];
+		my $age = $now - $mtime;
+		if ($age > 2 | !-e "$targetdir/lastsnap.jpg") {
+			sleep 0.1;
+			next;
+		} else {
+			last;
+		}
+	}
 
 	if (!-e "$targetdir/lastsnap.jpg") {
 		print "Last Snapshot in $targetdir does not exist.";
