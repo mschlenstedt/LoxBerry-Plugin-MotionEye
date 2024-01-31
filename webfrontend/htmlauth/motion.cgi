@@ -90,6 +90,8 @@ if ($query{"mail"} eq "1") {
 		exit 1;
 	}
 
+	print "Waiting " . $query{"wait"} . "s before taking snapshot...\n\n" if $query{"wait"};
+	sleep $query{"wait"} if $query{"wait"};
 
 	print "Executing command: curl \"http://localhost:7999/$query{'cam'}/action/snapshot\n\n";
 	system ("curl \"http://localhost:7999/$query{'cam'}/action/snapshot\"");
