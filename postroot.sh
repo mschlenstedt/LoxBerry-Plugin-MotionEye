@@ -76,6 +76,9 @@ fi
 echo "<INFO> Creating /etc/motioneye..."
 ln -s $PCONFIG /etc/motioneye
 
+echo "<INFO> Deleting Motion Logrotate..."
+rm /etc/logrotate.d/motion
+
 echo "<INFO> Adding user loxberry to video group..."
 usermod -a -G video loxberry
 
