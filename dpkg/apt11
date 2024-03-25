@@ -3,7 +3,7 @@ libavdevice58
 libavformat58
 libavutil56
 libmicrohttpd12
-libswscale6
+libswscale5
 libwebp6
 ffmpeg
 libmariadb3
