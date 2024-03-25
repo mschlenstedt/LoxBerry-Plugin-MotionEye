@@ -1,5 +1,6 @@
 [Unit]
 Description=motionEye Server
+After=network.target remote-fs.target syslog.target network-online.target
 
 [Service]
 ExecStart=/usr/local/bin/meyectl startserver -c /etc/motioneye/motioneye.conf

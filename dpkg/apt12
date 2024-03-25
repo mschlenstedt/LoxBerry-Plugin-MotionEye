@@ -1,0 +1,15 @@
+ffmpeg
+libmariadb3
+libpq5
+libmicrohttpd12
+python2
+python2-dev
+libssl-dev
+libcurl4-openssl-dev
+libjpeg-dev
+zlib1g-dev
+curl
+file
+s-nail
+libimage-magick-perl
+php-imagick
