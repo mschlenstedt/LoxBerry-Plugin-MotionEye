@@ -52,9 +52,9 @@ python2 /tmp/get-pip.py
 rm /tmp/get-pip.py
 
 echo "<INFO> Installing setuptools via pip..."
-yes | python2 -m pip setuptools
+yes | python3 -m pip setuptools
 
-INSTALLED_ST=$(python2 -m pip list --format=columns | grep "setuptools" | grep -v grep | wc -l)
+INSTALLED_ST=$(python3 -m pip list --format=columns | grep "setuptools" | grep -v grep | wc -l)
 if [ ${INSTALLED_ST} -ne "0" ]; then
 	echo "<OK> Setuptools installed successfully."
 else
@@ -63,9 +63,9 @@ else
 fi 
  
 echo "<INFO> Installing motioneye via pip..."
-yes | python2 -m pip install motioneye
+yes | python3 -m pip install --pre motioneye
 
-INSTALLED_ME=$(python2 -m pip list --format=columns | grep "motioneye" | grep -v grep | wc -l)
+INSTALLED_ME=$(python3 -m pip list --format=columns | grep "motioneye" | grep -v grep | wc -l)
 if [ ${INSTALLED_ME} -ne "0" ]; then
 	echo "<OK> MotionEye installed successfully."
 else
