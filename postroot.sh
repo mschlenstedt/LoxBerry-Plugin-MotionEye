@@ -85,7 +85,7 @@ usermod -a -G video loxberry
 echo "<INFO> Installing MotionEye Servicefile..."
 cp $PTEMPL/motioneye.systemd-unit-local /etc/systemd/system/motioneye.service
 # If Shebang is still /usr/bin/python, change it to /usr/bin/python2
-sed -i 's/^#!\(.*\)python$/#!\1python2/' /usr/local/bin/meyectl
+sed -i 's/^#!\(.*\)python$/#!\1python3/' /usr/local/bin/meyectl
 systemctl daemon-reload
 systemctl enable motioneye
 systemctl start motioneye
