@@ -76,17 +76,6 @@ else
   echo "<ERROR> Cannot download motion - unknown architecture"
 fi
 
-echo "<INFO> Installing setuptools via pip..."
-yes | python3 -m pip setuptools
-
-INSTALLED_ST=$(python3 -m pip list --format=columns | grep "setuptools" | grep -v grep | wc -l)
-if [ ${INSTALLED_ST} -ne "0" ]; then
-	echo "<OK> Setuptools installed successfully."
-else
-	echo "<FAIL> Setuptools could not be installed."
-	exit 2;
-fi 
- 
 echo "<INFO> Installing motioneye via pip..."
 yes | python3 -m pip install --pre motioneye
 
