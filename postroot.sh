@@ -46,10 +46,35 @@ PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
-echo "<INFO> Install newest pip2 version..."
-curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output /tmp/get-pip.py
-python2 /tmp/get-pip.py
-rm /tmp/get-pip.py
+# Motion
+RELEASETAG="release-4.6.0"
+VERSION="4.6.0-1"
+
+echo "<INFO> Installing motion from GitHub..."
+DEBIANVERSION=`. /etc/os-release && echo $VERSION_CODENAME`
+URL="https://github.com/Motion-Project/motion/releases/download/$RELEASETAG"
+
+if [ -e /opt/loxberry/config/system/is_arch_x86_64.cfg ]; then
+  ARCH="amd64"
+elif [ -e /opt/loxberry/config/system/is_x64.cfg  ]; then
+  ARCH="amd64"
+elif [ -e /opt/loxberry/config/system/is_arch_aarch64.cfg  ]; then
+  ARCH="arm64"
+elif [ -e /opt/loxberry/config/system/is_arch_armv7l.cfg  ]; then
+  ARCH="armhf"
+elif [ -e /opt/loxberry/config/system/is_raspberry.cfg  ]; then
+  ARCH="armhf"
+fi
+
+if [ $ARCH != "" ]; then
+  cd /tmp
+  DOWNLOADURL="${URL}/${DEBIANVERSION}_motion_${VERSION}_${ARCH}.deb"
+  wget $DOWNLOADURL
+  dpkg -i $DEBIANVERSION_motion_*.deb
+  rm $DEBIANVERSION_motion_*.deb
+else
+  echo "<ERROR> Cannot download motion - unknown architecture"
+fi
 
 echo "<INFO> Installing setuptools via pip..."
 yes | python3 -m pip setuptools
