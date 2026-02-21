@@ -47,8 +47,8 @@ PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
 # Motion
-RELEASETAG="release-4.6.0"
-VERSION="4.6.0-1"
+RELEASETAG="release-4.7.1"
+VERSION="4.7.1-1"
 
 echo "<INFO> Installing motion from GitHub..."
 DEBIANVERSION=`. /etc/os-release && echo $VERSION_CODENAME`
